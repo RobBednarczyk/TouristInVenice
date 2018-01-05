@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>VeniceForTourists!</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="header">
+        <h2>Venice tourist app</h2>
+    </div>
+
+    <div class="mainContainer">
+        <div class="sidebar">
+            <div class="sidebarTitle">
+                <p>Locations in Venice</p>
+            </div>
+            <div class="filterContainer">
+                <input type="text" id="filterInput" placeholder="Categories">
+                <button type="button" class="btn btn-primary" id="filterBtn">
+                    <span class="glyphicon glyphicon-filter"></span>
+                    <span>Filter</span>
+                </button>
+            </div>
+        </div>
+        <div class="mapContainer">
+            <div class="mapHeader">
+                <button type="button" class="btn btn-basic btn-lg">
+                    <div class="glyphicon glyphicon-menu-hamburger"></div>
+                </button>
+                <div class="markersPanel">
+                    <input id="showMarkers" type="button" value="Show markers">
+                    <input id="hideMarkers" type="button" value="Hide markers">
+                </div>
+            </div>
+            <div class="map">
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/viewModel.js"></script>
+    <script async defer
+        src=
+        "https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyDpEBni4bqsw5Jj3lErQ8YLiW4XaYgYJ_E&v=3&callback=initMap">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js">
+    </script>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+</html>

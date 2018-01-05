@@ -1,0 +1,120 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Comfortaa", cursive;
+    background: linear-gradient(to right, #809dff , #e6ecff);
+}
+
+.header {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h2 {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+    border: 3px solid #ff8533;
+    border-radius: 10px;
+    width: 80%;
+}
+
+.mainContainer{
+    height: 800px;
+    width: 98%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    /*border: 2px solid #ff8533;*/
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar {
+    height: 100%;
+    width: 20%;
+    background-color: #262626;
+    color: #ffffff;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebarTitle {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+.filterContainer {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#filterInput {
+    width: 75%;
+    height: 50%;
+    color: #000000;
+    margin-left: 3px;
+    border-radius: 6px;
+}
+
+#filterBtn {
+    width: 25%;
+    height: 50%;
+    margin-right: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mapContainer {
+    border-radius: 6px;
+    height: 100%;
+    width: 79%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.mapHeader {
+    width: 100%;
+    height: 10%;
+    background-color: #595959;
+    border-radius: 6px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.mapHeader button {
+    height: 100%;
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.glyphicon-menu-hamburger {
+    width: 100%;
+}
+
+.map {
+    width: 100%;
+    height: 90%;
+    border-radius: 6px;
+}
