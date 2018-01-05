@@ -492,8 +492,17 @@ function initMap() {
 }
 
 var listModel = function(locations) {
-    
-    this.markersList = ko.observableArray(locations);
+
+    this.locationsList = ko.observableArray(locations);
+
+    this.showMarkerInfo = function(location) {
+        var locIndex = locations.indexOf(location);
+        //alert(`${location.name} has been clicked. It is ${locIndex}`);
+        //alert(`Now we switched to markers. Its id is ${markers[locIndex].position.lat()}`);
+        var markerToBeShown = markers[locIndex];
+        displayMarker(markerToBeShown);
+
+    }
 };
 
 // -------------------
@@ -533,6 +542,16 @@ function populateInfoWindow(marker, infowindow) {
 // }
 
 
+// this function will
+
+function displayMarker(marker) {
+    //var bounds = new google.maps.LatLngBounds();
+    var largeInfowindow = new google.maps.InfoWindow();
+    marker.setMap(map);
+    //bounds.extend(marker.position);
+    //map.fitBounds(bounds);
+    populateInfoWindow(marker, largeInfowindow);
+}
 
 // This function will loop through the markers array and display them all.
 function showListings() {

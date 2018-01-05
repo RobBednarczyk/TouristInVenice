@@ -25,8 +25,8 @@
                     <span>Filter</span>
                 </button>
             </div>
-            <div data-bind="foreach: markersList" class="placesList">
-                <div data-bind="text: name" class="place">
+            <div data-bind="foreach: locationsList" class="placesList">
+                <div data-bind="text: name, click: $parent.showMarkerInfo" class="place">
                 </div>
             </div>
         </div>
