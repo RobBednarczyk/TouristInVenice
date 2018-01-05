@@ -25,6 +25,10 @@
                     <span>Filter</span>
                 </button>
             </div>
+            <div data-bind="foreach: markersList" class="placesList">
+                <div data-bind="text: name" class="place">
+                </div>
+            </div>
         </div>
         <div class="mapContainer">
             <div class="mapHeader">
@@ -40,18 +44,19 @@
             </div>
         </div>
     </div>
-    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js">
+    </script>
     <script src="js/viewModel.js"></script>
     <script async defer
         src=
         "https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyDpEBni4bqsw5Jj3lErQ8YLiW4XaYgYJ_E&v=3&callback=initMap">
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js">
-    </script>
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 
 </body>
 </html>

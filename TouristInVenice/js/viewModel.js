@@ -1,7 +1,98 @@
 var map;
 var markers = [];
-// var ListViewModel = function() {
-// };
+
+var locations = [
+    {
+        name: "Ristorante al Bagolo",
+        coordinates: {
+            lat: 45.43979,
+            lng: 12.327613
+        },
+        category: "restaurant",
+        favourite: false
+    },
+    {
+        name: "La Patatina",
+        coordinates: {
+            lat: 45.439969,
+            lng: 12.32785
+        },
+        category: "restaurant",
+        favourite: false
+    },
+    {
+        name: "Osteria da Filo",
+        coordinates: {
+            lat: 45.439503,
+            lng: 12.327801
+        },
+        category: "bar",
+        favourite: false
+    },
+    {
+        name: "San Giacomo Venezia",
+        coordinates: {
+            lat: 45.440184,
+            lng: 12.326146
+        },
+        category: "lodging",
+        favourite: false
+    },
+    {
+        name: "Ostaria al Vecio Pozzo",
+        coordinates: {
+            lat: 45.439099,
+            lng: 12.32369
+        },
+        category: "restaurant",
+        favourite: false
+    },
+    {
+        name: "Ai nomboli",
+        coordinates: {
+            lat: 45.436406,
+            lng: 12.328444
+        },
+        category: "bar",
+        favourite: false
+    },
+    {
+        name: "Ca' Spezier",
+        coordinates: {
+            lat: 45.441115,
+            lng: 12.328213
+        },
+        category: "lodging",
+        favourite: false
+    },
+    {
+        name: "Frulala",
+        coordinates: {
+            lat: 45.442645,
+            lng: 12.332353
+        },
+        category: "bar",
+        favourite: false
+    },
+    {
+        name: "Casa Alessandra",
+        coordinates: {
+            lat: 45.445227,
+            lng: 12.33284
+        },
+        category: "lodging",
+        favourite: false
+    },
+    {
+        name: "Cantina Aziende Agricole",
+        coordinates: {
+            lat: 45.444736,
+            lng: 12.328978
+        },
+        category: "bar",
+        favourite: false
+    },
+];
 
 // load map
 function initMap() {
@@ -378,98 +469,7 @@ function initMap() {
         styles: styles,
         zoom: 15,
     });
-    var locations = [
-        {
-            name: "Ristorante al Bagolo",
-            coordinates: {
-                lat: 45.43979,
-                lng: 12.327613
-            },
-            category: "restaurant",
-            favourite: false
-        },
-        {
-            name: "La Patatina",
-            coordinates: {
-                lat: 45.439969,
-                lng: 12.32785
-            },
-            category: "restaurant",
-            favourite: false
-        },
-        {
-            name: "Osteria da Filo",
-            coordinates: {
-                lat: 45.439503,
-                lng: 12.327801
-            },
-            category: "bar",
-            favourite: false
-        },
-        {
-            name: "San Giacomo Venezia",
-            coordinates: {
-                lat: 45.440184,
-                lng: 12.326146
-            },
-            category: "lodging",
-            favourite: false
-        },
-        {
-            name: "Ostaria al Vecio Pozzo",
-            coordinates: {
-                lat: 45.439099,
-                lng: 12.32369
-            },
-            category: "restaurant",
-            favourite: false
-        },
-        {
-            name: "Ai nomboli",
-            coordinates: {
-                lat: 45.436406,
-                lng: 12.328444
-            },
-            category: "bar",
-            favourite: false
-        },
-        {
-            name: "Ca' Spezier",
-            coordinates: {
-                lat: 45.441115,
-                lng: 12.328213
-            },
-            category: "lodging",
-            favourite: false
-        },
-        {
-            name: "Frulala",
-            coordinates: {
-                lat: 45.442645,
-                lng: 12.332353
-            },
-            category: "bar",
-            favourite: false
-        },
-        {
-            name: "Casa Alessandra",
-            coordinates: {
-                lat: 45.445227,
-                lng: 12.33284
-            },
-            category: "lodging",
-            favourite: false
-        },
-        {
-            name: "Cantina Aziende Agricole",
-            coordinates: {
-                lat: 45.444736,
-                lng: 12.328978
-            },
-            category: "bar",
-            favourite: false
-        },
-    ];
+
     // create info window templates
     var largeInfowindow = new google.maps.InfoWindow();
     // create markers from the data
@@ -491,6 +491,14 @@ function initMap() {
     }
 }
 
+var listModel = function(locations) {
+    
+    this.markersList = ko.observableArray(locations);
+};
+
+// -------------------
+// UTILITIES FUNCTIONS
+// -------------------
 
 // create two marker templates
 // var defaultIcon = makeMarkerIcon('0091ff');
@@ -525,6 +533,7 @@ function populateInfoWindow(marker, infowindow) {
 // }
 
 
+
 // This function will loop through the markers array and display them all.
 function showListings() {
   var bounds = new google.maps.LatLngBounds();
@@ -549,4 +558,5 @@ document.getElementById("hideMarkers").addEventListener('click', function() {
   hideMarkers(markers);
 });
 
-// ko.applyBindings(new ListViewModel());
+
+ko.applyBindings(new listModel(locations));
