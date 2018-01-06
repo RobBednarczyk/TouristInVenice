@@ -414,7 +414,8 @@ function initMap() {
             "elementType": "geometry.fill",
             "stylers": [
                 {
-                    "color": "#24282b"
+                    //"color": "#24282b"
+                    "color": "#cccccc"
                 }
             ]
         },
@@ -618,9 +619,9 @@ function populateInfoWindow(marker) {
 
     // add FOURSQUARE information
     var placeID;
-    var phoneNum;
-    var insidePhotoUrl;
-    var hours;
+    var address;
+    var fourSquareUrl;
+    var likes;
 
     // get the place id using a callback function in order to store the value in
     // a variable
@@ -632,7 +633,7 @@ function populateInfoWindow(marker) {
                 ll: `${marker.position.lat()},${marker.position.lng()}`,
                 client_id: "NB0O1WOUNUU2T3XLLQ4T15CZYY4GYLSCZAMRBGJ5JWLAYPOJ",
                 client_secret: "FR12JPD10JJXUTEQYRQJMEF4L2K3CSBLZ0MISYJSVNYEPTPS",
-                radius: 50,
+                //radius: 10,
                 v: "20170801"
             },
             success: function(data) {
@@ -651,11 +652,51 @@ function populateInfoWindow(marker) {
     // store the place ID in order to send another AJAX request
     function storePlaceID(idFromFourSquare) {
         placeID = idFromFourSquare;
-        streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-        infowindow.setContent("<div class='infoTitle'>" +
-            marker.title +
-            "</div><div id='pano'></div>" +
-            "<div>" + placeID +"</div>");
+        //alert(placeID);
+        // nested AJAX request:
+        function getDetails(callback, placeID) {
+            //alert(placeID);
+            $.ajax({
+                method: "GET",
+                url: "https://api.foursquare.com/v2/venues/" + placeID,
+                data: {
+                    client_id: "NB0O1WOUNUU2T3XLLQ4T15CZYY4GYLSCZAMRBGJ5JWLAYPOJ",
+                    client_secret: "FR12JPD10JJXUTEQYRQJMEF4L2K3CSBLZ0MISYJSVNYEPTPS",
+                    v: "20170801"
+                },
+                success: function(data) {
+                    var fullAddress = data["response"]["venue"]["location"]["formattedAddress"][0];
+                    var fourSquareUrl = data["response"]["venue"]["canonicalUrl"];
+                    var likes = data["response"]["venue"]["likes"]["count"];
+                    var placeID = placeID;
+                    //alert(fourSquareUrl);
+                    callback(fullAddress, fourSquareUrl, likes, placeID);
+                },
+                error: function() {
+                    alert("Cannot read data from foursquare");
+                }
+            })
+        }
+
+        function storeDetailInfo(fullAddress, fourSquareUrl, likes) {
+            var address = fullAddress;
+            var url = fourSquareUrl;
+            var likes = likes;
+            streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+            infowindow.setContent("<div class='infoTitle'>" +
+                marker.title +
+                "</div><div id='pano'></div>" +
+                "<div class='infoFour'>Foursquare info:" +
+                //"<div>PlaceID:" + placeID + "</div>" +
+                "<div>Address: " + address +"</div>" +
+                "<div>Foursquare url: " + "<a href=" + "'" + url + "'" + "target=_blank" + ">" +
+                 url + "</a>" +"</div>" +
+                "<div>User likes: " + likes + "</div>" +
+                "</div>");
+        }
+
+
+        getDetails(storeDetailInfo, placeID);
     }
 
     getPlaceID(storePlaceID);
