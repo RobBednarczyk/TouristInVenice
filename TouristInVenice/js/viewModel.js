@@ -94,6 +94,15 @@ var locations = [
         category: "Bar",
         favourite: false
     },
+    {
+        name: "La Zucca",
+        coordinates: {
+            lat: 45.440833,
+            lng: 12.328539
+        },
+        category: "Restaurant",
+        favourite: false
+    }
 ];
 
 // load map
@@ -591,7 +600,7 @@ function populateInfoWindow(marker) {
         var nearStreetViewLocation = data.location.latLng;
         var heading = google.maps.geometry.spherical.computeHeading(
           nearStreetViewLocation, marker.position);
-          infowindow.setContent("<div class='infoTitle'>" + marker.title + "</div><div id='pano'></div>");
+          //infowindow.setContent("<div class='infoTitle'>" + marker.title + "</div><div id='pano'></div>");
           var panoramaOptions = {
             position: nearStreetViewLocation,
             pov: {
@@ -606,9 +615,52 @@ function populateInfoWindow(marker) {
           "<div>No Street View Found</div>");
       }
     }
-    streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-    // add foursquare information
 
+    // add FOURSQUARE information
+    var placeID;
+    var phoneNum;
+    var insidePhotoUrl;
+    var hours;
+
+    // get the place id using a callback function in order to store the value in
+    // a variable
+    function getPlaceID(callback) {
+        $.ajax({
+            method: "GET",
+            url: "https://api.foursquare.com/v2/venues/search",
+            data: {
+                ll: `${marker.position.lat()},${marker.position.lng()}`,
+                client_id: "NB0O1WOUNUU2T3XLLQ4T15CZYY4GYLSCZAMRBGJ5JWLAYPOJ",
+                client_secret: "FR12JPD10JJXUTEQYRQJMEF4L2K3CSBLZ0MISYJSVNYEPTPS",
+                radius: 50,
+                v: "20170801"
+            },
+            success: function(data) {
+                placeID = data["response"]["venues"][0]["id"];
+                if (data["response"]["venues"][0]["contact"].length !== 0) {
+                    phoneNum = data["response"]["venues"][0]["contact"]["formattedPhone"];
+                }
+                callback(placeID);
+            },
+            error: function() {
+                alert("Cannot read data from foursquare");
+            }
+        });
+    }
+
+    // store the place ID in order to send another AJAX request
+    function storePlaceID(idFromFourSquare) {
+        placeID = idFromFourSquare;
+        streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+        infowindow.setContent("<div class='infoTitle'>" +
+            marker.title +
+            "</div><div id='pano'></div>" +
+            "<div>" + placeID +"</div>");
+    }
+
+    getPlaceID(storePlaceID);
+
+    //streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
 
     infowindow.open(map, marker);
 }
