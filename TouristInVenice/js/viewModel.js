@@ -1,5 +1,7 @@
 var map;
+// create an empty storage array for all markers
 var markers = [];
+
 
 var locations = [
     {
@@ -8,7 +10,7 @@ var locations = [
             lat: 45.43979,
             lng: 12.327613
         },
-        category: "restaurant",
+        category: "Restaurant",
         favourite: false
     },
     {
@@ -17,7 +19,7 @@ var locations = [
             lat: 45.439969,
             lng: 12.32785
         },
-        category: "restaurant",
+        category: "Restaurant",
         favourite: false
     },
     {
@@ -26,7 +28,7 @@ var locations = [
             lat: 45.439503,
             lng: 12.327801
         },
-        category: "bar",
+        category: "Bar",
         favourite: false
     },
     {
@@ -35,7 +37,7 @@ var locations = [
             lat: 45.440184,
             lng: 12.326146
         },
-        category: "lodging",
+        category: "Lodging",
         favourite: false
     },
     {
@@ -44,7 +46,7 @@ var locations = [
             lat: 45.439099,
             lng: 12.32369
         },
-        category: "restaurant",
+        category: "Restaurant",
         favourite: false
     },
     {
@@ -53,7 +55,7 @@ var locations = [
             lat: 45.436406,
             lng: 12.328444
         },
-        category: "bar",
+        category: "Bar",
         favourite: false
     },
     {
@@ -62,7 +64,7 @@ var locations = [
             lat: 45.441115,
             lng: 12.328213
         },
-        category: "lodging",
+        category: "Lodging",
         favourite: false
     },
     {
@@ -71,7 +73,7 @@ var locations = [
             lat: 45.442645,
             lng: 12.332353
         },
-        category: "bar",
+        category: "Bar",
         favourite: false
     },
     {
@@ -80,7 +82,7 @@ var locations = [
             lat: 45.445227,
             lng: 12.33284
         },
-        category: "lodging",
+        category: "Lodging",
         favourite: false
     },
     {
@@ -89,7 +91,7 @@ var locations = [
             lat: 45.444736,
             lng: 12.328978
         },
-        category: "bar",
+        category: "Bar",
         favourite: false
     },
 ];
@@ -470,28 +472,42 @@ function initMap() {
         zoom: 15,
     });
 
-    // create info window templates
-    var largeInfowindow = new google.maps.InfoWindow();
+
     // create markers from the data
     for (var i = 0; i < locations.length; i++) {
         var position = locations[i].coordinates;
         var name = locations[i].name;
+        var category = locations[i].category;
+        var largeInfowindow = new google.maps.InfoWindow();
         var marker = new google.maps.Marker({
             position: position,
             title: name,
+            category: category,
+            infowindow: largeInfowindow,
             animation: google.maps.Animation.DROP,
             id: i
         });
         // add the new marker to the marker list
         markers.push(marker);
         // connect an infowindow with a marker
+        // create info window templates
+        //var largeInfowindow = new google.maps.InfoWindow();
         marker.addListener("click", function() {
-            populateInfoWindow(this, largeInfowindow);
+            populateInfoWindow(this);
         });
     }
 }
 
 var listModel = function(locations) {
+    var self = this;
+
+    //var infowindow = new google.maps.InfoWindow();
+
+    //this.infowindow = infowindow;
+
+    this.highlightedMarker = null;
+
+    this.categories = ["All", "Bar", "Lodging", "Restaurant"];
 
     this.locationsList = ko.observableArray(locations);
 
@@ -500,8 +516,46 @@ var listModel = function(locations) {
         //alert(`${location.name} has been clicked. It is ${locIndex}`);
         //alert(`Now we switched to markers. Its id is ${markers[locIndex].position.lat()}`);
         var markerToBeShown = markers[locIndex];
+        if (self.highlightedMarker && self.highlightedMarker !== markerToBeShown) {
+            self.highlightedMarker.setAnimation(null)
+        }
+
+        if (markerToBeShown.getAnimation() === null) {
+            markerToBeShown.setAnimation(google.maps.Animation.BOUNCE);
+            self.highlightedMarker = markerToBeShown;
+        }
         displayMarker(markerToBeShown);
 
+    }
+    // set current category to "all"
+    this.currentCategory = ko.observable(this.categories[0]);
+
+    this.changeCurrentCategory = function(category) {
+        self.currentCategory(category);
+    }
+
+    this.changeLocationsList = function() {
+        if (self.currentCategory() !== "All") {
+            var filteredLocations = [];
+            for (var i=0; i<self.locationsList.length; i++) {
+                if (self.locationsList[i].category === self.currentCategory()) {
+                    filteredLocations.push(self.locationsList[i]);
+                }
+            }
+            self.locationsList(filteredLocations);
+        } else {
+            self.locationsList(locations);
+        }
+    }
+
+    // aply filter according to the chosen category
+    this.applyFilter = function() {
+        if (self.currentCategory() === "All") {
+            showAllMarkers();
+        } else {
+            var filteredMarkers = filterMarkerArray(self.currentCategory());
+            showFilteredMarkers(filteredMarkers);
+        }
     }
 };
 
@@ -513,20 +567,28 @@ var listModel = function(locations) {
 // var defaultIcon = makeMarkerIcon('0091ff');
 // var highlightedIcon = makeMarkerIcon('FFFF24');
 
-function populateInfoWindow(marker, infowindow) {
+// create, populate and bind an infowinfow with a marker
+
+
+function populateInfoWindow(marker) {
   // Check to make sure the infowindow is not already opened on this marker.
-  if (infowindow.marker != marker) {
+  var largeInfowindow = marker.infowindow;
+  if (largeInfowindow.marker != marker) {
     // Clear the infowindow content to give the streetview time to load.
     //infowindow.setContent('');
-    infowindow.marker = marker;
-    infowindow.setContent("<div>" + marker.title + "</div>");
+    largeInfowindow.marker = marker;
+    largeInfowindow.setContent("<div>" + marker.title + "</div>");
     // Make sure the marker property is cleared if the infowindow is closed.
-    infowindow.addListener('closeclick', function() {
-        infowindow.marker = null;
+    largeInfowindow.addListener('closeclick', function() {
+        largeInfowindow.marker = null;
+        largeInfowindow.close()
+        marker.setAnimation(null);
+        //marker.setMap(null);
     });
+    largeInfowindow.open(map, marker);
   }
   // Open the infowindow on the correct marker.
-  infowindow.open(map, marker);
+  //infowindow.open(map, marker);
 }
 
 // create a function for making different marker styles
@@ -546,15 +608,29 @@ function populateInfoWindow(marker, infowindow) {
 
 function displayMarker(marker) {
     //var bounds = new google.maps.LatLngBounds();
-    var largeInfowindow = new google.maps.InfoWindow();
+    //var largeInfowindow = new google.maps.InfoWindow();
     marker.setMap(map);
     //bounds.extend(marker.position);
     //map.fitBounds(bounds);
-    populateInfoWindow(marker, largeInfowindow);
+    populateInfoWindow(marker);
 }
 
+function showFilteredMarkers(filteredMarkers) {
+    // Extend the boundaries of the map for each marker and display the marker
+    var bounds = new google.maps.LatLngBounds();
+    // clear the previous filter result
+    hideMarkers();
+
+    for (var i = 0; i < filteredMarkers.length; i++) {
+      filteredMarkers[i].setMap(map);
+      bounds.extend(filteredMarkers[i].position);
+    }
+    map.fitBounds(bounds);
+ }
+
+
 // This function will loop through the markers array and display them all.
-function showListings() {
+function showAllMarkers() {
   var bounds = new google.maps.LatLngBounds();
   // Extend the boundaries of the map for each marker and display the marker
   for (var i = 0; i < markers.length; i++) {
@@ -565,17 +641,25 @@ function showListings() {
 }
 
 // This function will loop through the listings and hide them all.
-function hideMarkers(markers) {
+function hideMarkers() {
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(null);
   }
 }
 
-document.getElementById("showMarkers").addEventListener('click', showListings);
+function filterMarkerArray(category) {
+    var filteredMarkers = [];
+    for (var i = 0; i < markers.length; i++) {
+        if (markers[i].category === category) {
+            filteredMarkers.push(markers[i])
+        }
+    }
+    return filteredMarkers;
+}
 
-document.getElementById("hideMarkers").addEventListener('click', function() {
-  hideMarkers(markers);
-});
+document.getElementById("showMarkers").addEventListener('click', showAllMarkers);
+
+document.getElementById("hideMarkers").addEventListener('click', hideMarkers);
 
 
 ko.applyBindings(new listModel(locations));

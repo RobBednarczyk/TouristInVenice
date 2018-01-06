@@ -44,6 +44,7 @@ h2 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-around;
 }
 
 .sidebarTitle {
@@ -57,11 +58,43 @@ h2 {
 
 .filterContainer {
     width: 100%;
-    height: 10%;
+    height: 20%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.dropdown button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.dropdown-menu {
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropdown-menu li {
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropdown-menu li:hover {
+    background-color: #ff704d;
+}
+
+.category {
+    font-size: 16px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 #filterInput {
@@ -73,7 +106,7 @@ h2 {
 }
 
 #filterBtn {
-    width: 25%;
+    width: auto;
     height: 50%;
     margin-right: 3px;
     display: flex;

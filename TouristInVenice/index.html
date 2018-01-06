@@ -19,10 +19,20 @@
                 <p>Locations in Venice</p>
             </div>
             <div class="filterContainer">
-                <input type="text" id="filterInput" placeholder="Categories">
-                <button type="button" class="btn btn-primary" id="filterBtn">
+                <!--<input type="text" id="filterInput" placeholder="Categories">-->
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                        <div class="category" data-bind="text: currentCategory"></div>
+                        <!--<span class="caret"></span>-->
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    </button>
+                    <ul data-bind="foreach: categories" class="dropdown-menu">
+                        <li data-bind="text: $data, click: $parent.changeCurrentCategory"></li>
+                    </ul>
+                </div>
+                <button data-bind="click: applyFilter" type="button" class="btn btn-primary" id="filterBtn">
                     <span class="glyphicon glyphicon-filter"></span>
-                    <span>Filter</span>
+                    <span>Apply filter</span>
                 </button>
             </div>
             <div data-bind="foreach: locationsList" class="placesList">
