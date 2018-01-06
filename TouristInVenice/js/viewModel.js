@@ -535,21 +535,22 @@ var listModel = function(locations) {
     }
 
     this.changeLocationsList = function() {
+        self.locationsList(locations)
         if (self.currentCategory() !== "All") {
             var filteredLocations = [];
-            for (var i=0; i<self.locationsList.length; i++) {
-                if (self.locationsList[i].category === self.currentCategory()) {
-                    filteredLocations.push(self.locationsList[i]);
+            for (var i=0; i<self.locationsList().length; i++) {
+                if (self.locationsList()[i].category === self.currentCategory()) {
+                    filteredLocations.push(self.locationsList()[i]);
                 }
             }
             self.locationsList(filteredLocations);
-        } else {
-            self.locationsList(locations);
         }
     }
 
     // aply filter according to the chosen category
     this.applyFilter = function() {
+        // change the displayed locations as well
+        self.changeLocationsList();
         if (self.currentCategory() === "All") {
             showAllMarkers();
         } else {
