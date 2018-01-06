@@ -577,11 +577,39 @@ function populateInfoWindow(marker) {
         infowindow = new google.maps.InfoWindow();
     }
     infowindow.marker = marker;
-    infowindow.setContent("<div>" + marker.title + "</div>");
+    infowindow.setContent("<div class='infoTitle'>" + marker.title + "</div>");
     infowindow.addListener("closeclick", function() {
         infowindow.marker = null;
         marker.setAnimation(null);
     });
+
+    // add google street view photo
+    var streetViewService = new google.maps.StreetViewService();
+    var radius = 50;
+    function getStreetView(data, status) {
+      if (status == google.maps.StreetViewStatus.OK) {
+        var nearStreetViewLocation = data.location.latLng;
+        var heading = google.maps.geometry.spherical.computeHeading(
+          nearStreetViewLocation, marker.position);
+          infowindow.setContent("<div class='infoTitle'>" + marker.title + "</div><div id='pano'></div>");
+          var panoramaOptions = {
+            position: nearStreetViewLocation,
+            pov: {
+              heading: heading,
+              pitch: 30
+            }
+          };
+        var panorama = new google.maps.StreetViewPanorama(
+          document.getElementById("pano"), panoramaOptions);
+      } else {
+        infowindow.setContent("<div class='infoTitle'>" + marker.title + "</div>" +
+          "<div>No Street View Found</div>");
+      }
+    }
+    streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+    // add foursquare information
+
+
     infowindow.open(map, marker);
 }
   // var largeInfowindow = marker.infowindow;
