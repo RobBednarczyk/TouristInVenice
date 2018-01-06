@@ -1,7 +1,7 @@
 var map;
 // create an empty storage array for all markers
 var markers = [];
-
+var infowindow = null;
 
 var locations = [
     {
@@ -478,12 +478,12 @@ function initMap() {
         var position = locations[i].coordinates;
         var name = locations[i].name;
         var category = locations[i].category;
-        var largeInfowindow = new google.maps.InfoWindow();
+        // var largeInfowindow = new google.maps.InfoWindow();
         var marker = new google.maps.Marker({
             position: position,
             title: name,
             category: category,
-            infowindow: largeInfowindow,
+            //infowindow: largeInfowindow,
             animation: google.maps.Animation.DROP,
             id: i
         });
@@ -572,25 +572,36 @@ var listModel = function(locations) {
 
 
 function populateInfoWindow(marker) {
-  // Check to make sure the infowindow is not already opened on this marker.
-  var largeInfowindow = marker.infowindow;
-  if (largeInfowindow.marker != marker) {
+    // Check to make sure the infowindow is not already opened on this marker.
+    if (!infowindow) {
+        infowindow = new google.maps.InfoWindow();
+    }
+    infowindow.marker = marker;
+    infowindow.setContent("<div>" + marker.title + "</div>");
+    infowindow.addListener("closeclick", function() {
+        infowindow.marker = null;
+        marker.setAnimation(null);
+    });
+    infowindow.open(map, marker);
+}
+  // var largeInfowindow = marker.infowindow;
+  //if (largeInfowindow.marker != marker) {
     // Clear the infowindow content to give the streetview time to load.
     //infowindow.setContent('');
-    largeInfowindow.marker = marker;
-    largeInfowindow.setContent("<div>" + marker.title + "</div>");
+//    largeInfowindow.marker = marker;
+//    largeInfowindow.setContent("<div>" + marker.title + "</div>");
     // Make sure the marker property is cleared if the infowindow is closed.
-    largeInfowindow.addListener('closeclick', function() {
-        largeInfowindow.marker = null;
-        largeInfowindow.close()
-        marker.setAnimation(null);
+//    largeInfowindow.addListener('closeclick', function() {
+//        largeInfowindow.marker = null;
+//        largeInfowindow.close()
+//        marker.setAnimation(null);
         //marker.setMap(null);
-    });
-    largeInfowindow.open(map, marker);
-  }
+//    });
+//    largeInfowindow.open(map, marker);
+//  }
   // Open the infowindow on the correct marker.
   //infowindow.open(map, marker);
-}
+//}
 
 // create a function for making different marker styles
 // function makeMarkerIcon(markerColor) {
