@@ -135,10 +135,11 @@ function initMap() {
             "elementType": "labels.text.fill",
             "stylers": [
                 {
-                    "saturation": 36
+                    "saturation": 100
                 },
                 {
-                    "color": "#ff704d"
+                    //"color": "#ff704d"
+                    "color": "#cc2900"
                 },
                 {
                     "lightness": 40
@@ -483,17 +484,15 @@ function initMap() {
     });
 
 
-    // create markers from the data
+    // create markers from the locations data
     for (var i = 0; i < locations.length; i++) {
         var position = locations[i].coordinates;
         var name = locations[i].name;
         var category = locations[i].category;
-        // var largeInfowindow = new google.maps.InfoWindow();
         var marker = new google.maps.Marker({
             position: position,
             title: name,
             category: category,
-            //infowindow: largeInfowindow,
             animation: google.maps.Animation.DROP,
             id: i
         });
@@ -511,10 +510,6 @@ function initMap() {
 var listModel = function(locations) {
     var self = this;
 
-    //var infowindow = new google.maps.InfoWindow();
-
-    //this.infowindow = infowindow;
-
     this.highlightedMarker = null;
 
     this.categories = ["All", "Bar", "Lodging", "Restaurant"];
@@ -523,8 +518,6 @@ var listModel = function(locations) {
 
     this.showMarkerInfo = function(location) {
         var locIndex = locations.indexOf(location);
-        //alert(`${location.name} has been clicked. It is ${locIndex}`);
-        //alert(`Now we switched to markers. Its id is ${markers[locIndex].position.lat()}`);
         var markerToBeShown = markers[locIndex];
         if (self.highlightedMarker && self.highlightedMarker !== markerToBeShown) {
             self.highlightedMarker.setAnimation(null)
@@ -573,13 +566,6 @@ var listModel = function(locations) {
 // -------------------
 // UTILITIES FUNCTIONS
 // -------------------
-
-// create two marker templates
-// var defaultIcon = makeMarkerIcon('0091ff');
-// var highlightedIcon = makeMarkerIcon('FFFF24');
-
-// create, populate and bind an infowinfow with a marker
-
 
 function populateInfoWindow(marker) {
     // Check to make sure the infowindow is not already opened on this marker.
@@ -652,10 +638,10 @@ function populateInfoWindow(marker) {
     // store the place ID in order to send another AJAX request
     function storePlaceID(idFromFourSquare) {
         placeID = idFromFourSquare;
-        //alert(placeID);
+
         // nested AJAX request:
         function getDetails(callback, placeID) {
-            //alert(placeID);
+
             $.ajax({
                 method: "GET",
                 url: "https://api.foursquare.com/v2/venues/" + placeID,
@@ -667,10 +653,10 @@ function populateInfoWindow(marker) {
                 success: function(data) {
                     var fullAddress = data["response"]["venue"]["location"]["formattedAddress"][0];
                     var fourSquareUrl = data["response"]["venue"]["canonicalUrl"];
-                    var likes = data["response"]["venue"]["likes"]["count"];
+                    var userLikes = data["response"]["venue"]["likes"]["count"];
                     var placeID = placeID;
-                    //alert(fourSquareUrl);
-                    callback(fullAddress, fourSquareUrl, likes, placeID);
+
+                    callback(fullAddress, fourSquareUrl, userLikes, placeID);
                 },
                 error: function() {
                     alert("Cannot read data from foursquare");
@@ -678,16 +664,15 @@ function populateInfoWindow(marker) {
             })
         }
 
-        function storeDetailInfo(fullAddress, fourSquareUrl, likes) {
-            var address = fullAddress;
-            var url = fourSquareUrl;
-            var likes = likes;
+        function storeDetailInfo(fullAddress, fourSquareUrl, userLikes) {
+            let address = fullAddress;
+            let url = fourSquareUrl;
+            let likes = userLikes;
             streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
             infowindow.setContent("<div class='infoTitle'>" +
                 marker.title +
                 "</div><div id='pano'></div>" +
                 "<div class='infoFour'>Foursquare info:" +
-                //"<div>PlaceID:" + placeID + "</div>" +
                 "<div>Address: " + address +"</div>" +
                 "<div>Foursquare url: " + "<a href=" + "'" + url + "'" + "target=_blank" + ">" +
                  url + "</a>" +"</div>" +
@@ -701,50 +686,11 @@ function populateInfoWindow(marker) {
 
     getPlaceID(storePlaceID);
 
-    //streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-
     infowindow.open(map, marker);
 }
-  // var largeInfowindow = marker.infowindow;
-  //if (largeInfowindow.marker != marker) {
-    // Clear the infowindow content to give the streetview time to load.
-    //infowindow.setContent('');
-//    largeInfowindow.marker = marker;
-//    largeInfowindow.setContent("<div>" + marker.title + "</div>");
-    // Make sure the marker property is cleared if the infowindow is closed.
-//    largeInfowindow.addListener('closeclick', function() {
-//        largeInfowindow.marker = null;
-//        largeInfowindow.close()
-//        marker.setAnimation(null);
-        //marker.setMap(null);
-//    });
-//    largeInfowindow.open(map, marker);
-//  }
-  // Open the infowindow on the correct marker.
-  //infowindow.open(map, marker);
-//}
-
-// create a function for making different marker styles
-// function makeMarkerIcon(markerColor) {
-//   var markerImage = new google.maps.MarkerImage(
-//     'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
-//     '|40|_|%E2%80%A2',
-//     new google.maps.Size(21, 34),
-//     new google.maps.Point(0, 0),
-//     new google.maps.Point(10, 34),
-//     new google.maps.Size(21,34));
-//   return markerImage;
-// }
-
-
-// this function will
 
 function displayMarker(marker) {
-    //var bounds = new google.maps.LatLngBounds();
-    //var largeInfowindow = new google.maps.InfoWindow();
     marker.setMap(map);
-    //bounds.extend(marker.position);
-    //map.fitBounds(bounds);
     populateInfoWindow(marker);
 }
 
