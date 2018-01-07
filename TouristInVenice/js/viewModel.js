@@ -520,7 +520,7 @@ var listModel = function(locations) {
         var locIndex = locations.indexOf(location);
         var markerToBeShown = markers[locIndex];
         if (self.highlightedMarker && self.highlightedMarker !== markerToBeShown) {
-            self.highlightedMarker.setAnimation(null)
+            self.highlightedMarker.setAnimation(null);
         }
 
         if (markerToBeShown.getAnimation() === null) {
@@ -529,16 +529,16 @@ var listModel = function(locations) {
         }
         displayMarker(markerToBeShown);
 
-    }
+    };
     // set current category to "all"
     this.currentCategory = ko.observable(this.categories[0]);
 
     this.changeCurrentCategory = function(category) {
         self.currentCategory(category);
-    }
+    };
 
     this.changeLocationsList = function() {
-        self.locationsList(locations)
+        self.locationsList(locations);
         if (self.currentCategory() !== "All") {
             var filteredLocations = [];
             for (var i=0; i<self.locationsList().length; i++) {
@@ -548,7 +548,7 @@ var listModel = function(locations) {
             }
             self.locationsList(filteredLocations);
         }
-    }
+    };
 
     // aply filter according to the chosen category
     this.applyFilter = function() {
@@ -560,7 +560,7 @@ var listModel = function(locations) {
             var filteredMarkers = filterMarkerArray(self.currentCategory());
             showFilteredMarkers(filteredMarkers);
         }
-    }
+    };
 };
 
 // -------------------
@@ -623,10 +623,7 @@ function populateInfoWindow(marker) {
                 v: "20170801"
             },
             success: function(data) {
-                placeID = data["response"]["venues"][0]["id"];
-                if (data["response"]["venues"][0]["contact"].length !== 0) {
-                    phoneNum = data["response"]["venues"][0]["contact"]["formattedPhone"];
-                }
+                placeID = data.response.venues[0].id;
                 callback(placeID);
             },
             error: function() {
@@ -651,9 +648,9 @@ function populateInfoWindow(marker) {
                     v: "20170801"
                 },
                 success: function(data) {
-                    var fullAddress = data["response"]["venue"]["location"]["formattedAddress"][0];
-                    var fourSquareUrl = data["response"]["venue"]["canonicalUrl"];
-                    var userLikes = data["response"]["venue"]["likes"]["count"];
+                    var fullAddress = data.response.venue.location.formattedAddress[0];
+                    var fourSquareUrl = data.response.venue.canonicalUrl;
+                    var userLikes = data.response.venue.likes.count;
                     var placeID = placeID;
 
                     callback(fullAddress, fourSquareUrl, userLikes, placeID);
@@ -661,7 +658,7 @@ function populateInfoWindow(marker) {
                 error: function() {
                     alert("Cannot read data from foursquare");
                 }
-            })
+            });
         }
 
         function storeDetailInfo(fullAddress, fourSquareUrl, userLikes) {
