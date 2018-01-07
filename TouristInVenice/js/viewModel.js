@@ -1,7 +1,9 @@
 var map;
 // create an empty storage array for all markers
 var markers = [];
+// create two variables for the infowindow template and the highlighted marker
 var infowindow = null;
+var highlightedMarker = null;
 
 var locations = [
     {
@@ -501,18 +503,18 @@ function initMap() {
         // add the new marker to the marker list
         markers.push(marker);
 
-        //marker.addListener("click", function() {
-        //    populateInfoWindow(this);
-        //});
     }
     markers.forEach(function(marker) {
         marker.addListener("click", function() {
             // add the animation once the marker is clicked
-            if (listModel.highlightedMarker && listModel.highlightedMarker !== marker) {
-                listModel.highlightedMarker.setAnimation(null);
+
+            if (highlightedMarker && highlightedMarker !== marker) {
+                highlightedMarker.setAnimation(null);
             }
-            marker.setAnimation(google.maps.Animation.BOUNCE);
-            listModel.highlightedMarker = marker;
+            if (marker.getAnimation() === null) {
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+                highlightedMarker = marker;
+            }
             populateInfoWindow(this);
         });
     });
@@ -521,11 +523,7 @@ function initMap() {
 var listModel = function(locations) {
     var self = this;
 
-    this.highlightedMarker = null;
-
-    //this.categories = ["All", "Bar", "Lodging", "Restaurant"];
-
-    // enhance user experience
+    // enhance user experience by automatically applying filter
     this.categoryList = [];
     // dynamically retrieves the categories from the locations listModel
     locations.map(location => {
@@ -567,13 +565,14 @@ var listModel = function(locations) {
     this.showMarkerInfo = function(location) {
         var locIndex = locations.indexOf(location);
         var markerToBeShown = markers[locIndex];
-        if (self.highlightedMarker && self.highlightedMarker !== markerToBeShown) {
-            self.highlightedMarker.setAnimation(null);
+
+        if (highlightedMarker && highlightedMarker !== markerToBeShown) {
+            highlightedMarker.setAnimation(null);
         }
 
         if (markerToBeShown.getAnimation() === null) {
             markerToBeShown.setAnimation(google.maps.Animation.BOUNCE);
-            self.highlightedMarker = markerToBeShown;
+            highlightedMarker = markerToBeShown;
         }
         displayMarker(markerToBeShown);
 
