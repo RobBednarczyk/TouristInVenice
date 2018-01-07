@@ -523,7 +523,7 @@ var listModel = function(locations) {
 
     this.highlightedMarker = null;
 
-    this.categories = ["All", "Bar", "Lodging", "Restaurant"];
+    //this.categories = ["All", "Bar", "Lodging", "Restaurant"];
 
     // enhance user experience
     this.categoryList = [];
@@ -535,14 +535,33 @@ var listModel = function(locations) {
     });
     // add the "All" category
     this.categoryList.push("All");
-    //console.log(this.categoryList);
 
     this.locationsList = ko.observableArray(locations);
     this.categories = ko.observableArray(this.categoryList);
-    //console.log(this.categories());
-    this.selectedCategory = ko.observable(this.categories()[this.categories().length-1]);
-    //console.log(this.selectedCategory());
 
+    this.selectedCategory = ko.observable(this.categories()[this.categories().length-1]);
+
+    this.filterLocations = ko.computed(function() {
+        let filter = this.selectedCategory();
+        if (filter === "All") {
+            return this.locationsList();
+        } else {
+            return ko.utils.arrayFilter(this.locationsList(), function(location) {
+                return (location.category === filter);
+            });
+        }
+    }, this);
+
+    this.filterMarkers = ko.computed(function() {
+        let filter = this.selectedCategory();
+        if (filter === "All") {
+            return markers;
+        } else {
+            return ko.utils.arrayFilter(markers, function(marker) {
+                return (marker.category === filter);
+            });
+        }
+    }, this);
 
 
     this.showMarkerInfo = function(location) {
@@ -559,37 +578,12 @@ var listModel = function(locations) {
         displayMarker(markerToBeShown);
 
     };
-    // set current category to "all"
-    this.currentCategory = ko.observable(this.categories[0]);
 
-    this.changeCurrentCategory = function(category) {
-        self.currentCategory(category);
+    this.changeSelectedCategory = function(category) {
+        self.selectedCategory(category);
+        showFilteredMarkers(self.filterMarkers());
     };
 
-    this.changeLocationsList = function() {
-        self.locationsList(locations);
-        if (self.currentCategory() !== "All") {
-            var filteredLocations = [];
-            for (var i=0; i<self.locationsList().length; i++) {
-                if (self.locationsList()[i].category === self.currentCategory()) {
-                    filteredLocations.push(self.locationsList()[i]);
-                }
-            }
-            self.locationsList(filteredLocations);
-        }
-    };
-
-    // aply filter according to the chosen category
-    this.applyFilter = function() {
-        // change the displayed locations as well
-        self.changeLocationsList();
-        if (self.currentCategory() === "All") {
-            showAllMarkers();
-        } else {
-            var filteredMarkers = filterMarkerArray(self.currentCategory());
-            showFilteredMarkers(filteredMarkers);
-        }
-    };
 
     this.showEverything = function() {
         showAllMarkers();
@@ -739,6 +733,9 @@ function showFilteredMarkers(filteredMarkers) {
       filteredMarkers[i].setMap(map);
       bounds.extend(filteredMarkers[i].position);
     }
+    google.maps.event.addDomListener(window, 'resize', function() {
+        map.fitBounds(bounds); // `bounds` is a `LatLngBounds` object
+    });
     map.fitBounds(bounds);
  }
 
@@ -752,6 +749,9 @@ function showAllMarkers() {
     markers[i].setAnimation(google.maps.Animation.DROP);
     bounds.extend(markers[i].position);
   }
+  google.maps.event.addDomListener(window, 'resize', function() {
+      map.fitBounds(bounds); // `bounds` is a `LatLngBounds` object
+  });
   map.fitBounds(bounds);
 }
 
@@ -772,12 +772,9 @@ function filterMarkerArray(category) {
     return filteredMarkers;
 }
 
-//document.getElementById("showMarkers").addEventListener('click', showAllMarkers);
-
-//document.getElementById("hideMarkers").addEventListener('click', hideMarkers);
 
 function mapsErrorHandler() {
-    alert("Error occured while loading the map...");
+    alert("Sorry, an error occured while loading the map...");
 }
 
 ko.applyBindings(new listModel(locations));

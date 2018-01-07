@@ -16,40 +16,30 @@
         <h2>Venice tourist app</h2>
     </div>
     </header>
-    <article>
+    <main>
     <div class="mainContainer">
         <div class="sidebar">
             <div class="sidebarTitle">
-                <!--<p>Locations in Venice</p>-->
                 <h4>Choose a category</h4>
             </div>
             <div class="filterContainer">
-                <!--<input type="text" id="filterInput" placeholder="Categories">-->
                 <div class="dropdown">
                     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                        <div class="category" data-bind="text: currentCategory"></div>
-                        <!--<span class="caret"></span>-->
+                        <div class="category" data-bind="text: selectedCategory"></div>
                         <span class="glyphicon glyphicon-chevron-down"></span>
                     </button>
                     <ul data-bind="foreach: categories" class="dropdown-menu">
-                        <li data-bind="text: $data, click: $parent.changeCurrentCategory"></li>
+                        <li data-bind="text: $data, click: $parent.changeSelectedCategory"></li>
                     </ul>
                 </div>
-                <button data-bind="click: applyFilter" type="button" class="btn btn-primary" id="filterBtn">
-                    <span class="glyphicon glyphicon-filter"></span>
-                    <span>Apply filter</span>
-                </button>
             </div>
-            <div data-bind="foreach: locationsList" class="placesList">
+            <div data-bind="foreach: filterLocations" class="placesList">
                 <div data-bind="text: name, click: $parent.showMarkerInfo" class="place">
                 </div>
             </div>
         </div>
         <div class="mapContainer">
             <div class="mapHeader">
-                <!--<button type="button" class="btn btn-basic btn-lg">
-                    <div class="glyphicon glyphicon-menu-hamburger"></div>
-                </button>-->
                 <div class="markersPanel">
                     <input data-bind="click: showEverything" class="btn btn-primary" id="showMarkers" type="button" value="Show markers">
                     <input data-bind="click: hideEverything" class="btn btn-primary" id="hideMarkers" type="button" value="Hide markers">
@@ -59,7 +49,7 @@
             </div>
         </div>
     </div>
-    </article>
+    </main>
 
     <footer>
         <div class="footer">
