@@ -296,5 +296,17 @@ h2 {
         align-items: center;
     }
 
+    .dropdown {
+        width: 100%;
+    }
+
+    .dropdown button {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
 
 }

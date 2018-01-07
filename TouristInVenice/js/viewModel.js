@@ -498,13 +498,16 @@ function initMap() {
         });
         // add the new marker to the marker list
         markers.push(marker);
-        // connect an infowindow with a marker
-        // create info window templates
-        //var largeInfowindow = new google.maps.InfoWindow();
+
+        //marker.addListener("click", function() {
+        //    populateInfoWindow(this);
+        //});
+    }
+    markers.forEach(function(marker) {
         marker.addListener("click", function() {
             populateInfoWindow(this);
         });
-    }
+    });
 }
 
 var listModel = function(locations) {
@@ -727,7 +730,7 @@ function filterMarkerArray(category) {
     var filteredMarkers = [];
     for (var i = 0; i < markers.length; i++) {
         if (markers[i].category === category) {
-            filteredMarkers.push(markers[i])
+            filteredMarkers.push(markers[i]);
         }
     }
     return filteredMarkers;
