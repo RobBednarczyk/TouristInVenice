@@ -223,6 +223,18 @@ h2 {
   height: 300px;
 }
 
+.footer {
+    width: 98%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    background-color: #262626;
+    border-radius: 6px;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+}
+
 /* mobile screen */
 @media only screen and (max-width: 440px) {
     .mainContainer {

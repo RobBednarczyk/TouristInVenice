@@ -11,10 +11,12 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 <body>
+    <header>
     <div class="header">
         <h2>Venice tourist app</h2>
     </div>
-
+    </header>
+    <article>
     <div class="mainContainer">
         <div class="sidebar">
             <div class="sidebarTitle">
@@ -49,27 +51,34 @@
                     <div class="glyphicon glyphicon-menu-hamburger"></div>
                 </button>-->
                 <div class="markersPanel">
-                    <input class="btn btn-primary" id="showMarkers" type="button" value="Show markers">
-                    <input class="btn btn-primary" id="hideMarkers" type="button" value="Hide markers">
+                    <input data-bind="click: showEverything" class="btn btn-primary" id="showMarkers" type="button" value="Show markers">
+                    <input data-bind="click: hideEverything" class="btn btn-primary" id="hideMarkers" type="button" value="Hide markers">
                 </div>
             </div>
             <div class="map">
             </div>
         </div>
     </div>
+    </article>
+
+    <footer>
+        <div class="footer">
+            <img src="images/social-icons.svg" alt="No image available" />
+        </div>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js">
     </script>
     <script src="js/viewModel.js"></script>
-    <script async defer
-        src=
-        "https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyDpEBni4bqsw5Jj3lErQ8YLiW4XaYgYJ_E&v=3&callback=initMap">
-    </script>
+
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+    <script async defer onerror="mapsErrorHandler()"
+        src=
+        "https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyDpEBni4bqsw5Jj3lErQ8YLiW4XaYgYJ_E&v=3&callback=initMap">
+    </script>
 
 </body>
 </html>

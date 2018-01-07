@@ -493,6 +493,8 @@ function initMap() {
             position: position,
             title: name,
             category: category,
+            // show marker by default
+            map: map,
             animation: google.maps.Animation.DROP,
             id: i
         });
@@ -505,6 +507,12 @@ function initMap() {
     }
     markers.forEach(function(marker) {
         marker.addListener("click", function() {
+            // add the animation once the marker is clicked
+            if (listModel.highlightedMarker && listModel.highlightedMarker !== marker) {
+                listModel.highlightedMarker.setAnimation(null);
+            }
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            listModel.highlightedMarker = marker;
             populateInfoWindow(this);
         });
     });
@@ -517,7 +525,25 @@ var listModel = function(locations) {
 
     this.categories = ["All", "Bar", "Lodging", "Restaurant"];
 
+    // enhance user experience
+    this.categoryList = [];
+    // dynamically retrieves the categories from the locations listModel
+    locations.map(location => {
+        if (!this.categoryList.includes(location.category)) {
+            this.categoryList.push(location.category);
+        }
+    });
+    // add the "All" category
+    this.categoryList.push("All");
+    //console.log(this.categoryList);
+
     this.locationsList = ko.observableArray(locations);
+    this.categories = ko.observableArray(this.categoryList);
+    //console.log(this.categories());
+    this.selectedCategory = ko.observable(this.categories()[this.categories().length-1]);
+    //console.log(this.selectedCategory());
+
+
 
     this.showMarkerInfo = function(location) {
         var locIndex = locations.indexOf(location);
@@ -564,6 +590,15 @@ var listModel = function(locations) {
             showFilteredMarkers(filteredMarkers);
         }
     };
+
+    this.showEverything = function() {
+        showAllMarkers();
+    };
+
+    this.hideEverything = function() {
+        hideMarkers();
+    };
+
 };
 
 // -------------------
@@ -714,6 +749,7 @@ function showAllMarkers() {
   // Extend the boundaries of the map for each marker and display the marker
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(map);
+    markers[i].setAnimation(google.maps.Animation.DROP);
     bounds.extend(markers[i].position);
   }
   map.fitBounds(bounds);
@@ -736,9 +772,12 @@ function filterMarkerArray(category) {
     return filteredMarkers;
 }
 
-document.getElementById("showMarkers").addEventListener('click', showAllMarkers);
+//document.getElementById("showMarkers").addEventListener('click', showAllMarkers);
 
-document.getElementById("hideMarkers").addEventListener('click', hideMarkers);
+//document.getElementById("hideMarkers").addEventListener('click', hideMarkers);
 
+function mapsErrorHandler() {
+    alert("Error occured while loading the map...");
+}
 
 ko.applyBindings(new listModel(locations));
